@@ -5,34 +5,35 @@ import pro.sky.java.course2.hwmap27.Employee;
 import pro.sky.java.course2.hwmap27.exception.EmployeeAlreadyAddedException;
 import pro.sky.java.course2.hwmap27.exception.EmployeeNotFoundException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-    private final List<Employee> employeeList;
+    private final Map<String,Employee> employeeMap;
 
-    public EmployeeServiceImpl() {
-        this.employeeList = new ArrayList<>();
+    public EmployeeServiceImpl(Map<String, Employee> employeeMap) {
+        this.employeeMap = employeeMap;
     }
+
 
     @Override
     public Employee add(String firstName, String lastName) {
         Employee employee = new Employee(firstName, lastName);
-        if(employeeList.contains(employee)){
+        String s= firstName+lastName;
+        if(employeeMap.containsKey(s)){
             throw new EmployeeAlreadyAddedException();
         }
-        employeeList.add(employee);
+        employeeMap.put(s,employee);
         return employee;
     }
 
     @Override
     public Employee remove(String firstName, String lastName) {
         Employee employee = new Employee(firstName, lastName);
-        if (employeeList.contains(employee)) {
-            employeeList.remove(employee);
+        if (employeeMap.containsValue(employee)) {
+            String s= firstName+lastName;
+            employeeMap.remove(s);
+            return employee;
         }
         throw new EmployeeNotFoundException();
 
@@ -41,16 +42,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee find(String firstName, String lastName) {
         Employee employee = new Employee(firstName, lastName);
-        if (employeeList.contains(employee)) {
+        String s= firstName+lastName;
+        if (employeeMap.containsKey(s)) {
             return employee;
         }
         throw new EmployeeNotFoundException();
     }
 
     @Override
-    public Collection<Employee> findAll() {
+    public Map<String, Employee> findAll() {
 
-        return Collections.unmodifiableList(employeeList);
+        return employeeMap;
     }
 
 }

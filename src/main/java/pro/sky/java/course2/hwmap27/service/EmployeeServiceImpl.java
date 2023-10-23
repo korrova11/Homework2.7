@@ -9,7 +9,7 @@ import java.util.*;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-    private final Map<String,Employee> employeeMap;
+    private final Map<String, Employee> employeeMap;
 
     public EmployeeServiceImpl(Map<String, Employee> employeeMap) {
         this.employeeMap = employeeMap;
@@ -19,21 +19,21 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee add(String firstName, String lastName) {
         Employee employee = new Employee(firstName, lastName);
-        String s= firstName+lastName;
-        if(employeeMap.containsKey(s)){
+        String s = firstName + lastName;
+        if (employeeMap.containsKey(s)) {
             throw new EmployeeAlreadyAddedException();
         }
-        employeeMap.put(s,employee);
+        employeeMap.put(s, employee);
         return employee;
     }
 
     @Override
     public Employee remove(String firstName, String lastName) {
-        Employee employee = new Employee(firstName, lastName);
-        if (employeeMap.containsValue(employee)) {
-            String s= firstName+lastName;
-            employeeMap.remove(s);
-            return employee;
+        //Employee employee = new Employee(firstName, lastName);
+        String s = firstName + lastName;
+        if (employeeMap.containsKey(s)) {
+
+            return employeeMap.remove(s);
         }
         throw new EmployeeNotFoundException();
 
@@ -41,12 +41,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee find(String firstName, String lastName) {
-        Employee employee = new Employee(firstName, lastName);
-        String s= firstName+lastName;
-        if (employeeMap.containsKey(s)) {
-            return employee;
-        }
-        throw new EmployeeNotFoundException();
+        // Employee employee1 = employeeMap.get(firstName + lastName);
+        return Optional.ofNullable(employeeMap.get(firstName + lastName))
+                .orElseThrow(EmployeeNotFoundException::new);
+
     }
 
     @Override
